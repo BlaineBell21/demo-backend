@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/fullInternships")
+@RequestMapping("/api/internships")
 @CrossOrigin(origins = "*") // Allow frontend to connect
 public class InternshipController {
 

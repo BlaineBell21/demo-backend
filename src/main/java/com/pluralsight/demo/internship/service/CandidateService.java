@@ -5,6 +5,7 @@ import com.pluralsight.demo.internship.repository.CandidateRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CandidateService {
@@ -24,6 +25,11 @@ public class CandidateService {
         return candidateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Candidate not found with id: " + id));
     }
+
+    public List<Candidate> getCandidatesByFieldOfStudy(String fieldOfStudy) {
+        return candidateRepository.findAll().stream()
+                .filter(c -> c.getFieldOfStudy().equalsIgnoreCase(fieldOfStudy))
+                .collect(Collectors.toList()); }
 
     public Candidate createCandidate(Candidate candidate) {
         return candidateRepository.save(candidate);
