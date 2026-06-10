@@ -2,7 +2,6 @@ package com.pluralsight.demo.internship.controller;
 
 import com.pluralsight.demo.internship.model.Candidate;
 import com.pluralsight.demo.internship.service.CandidateService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,12 +30,6 @@ public class CandidateController {
         return ResponseEntity.ok(candidates);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Candidate> getCandidateById(@PathVariable Long id) {
-        Candidate candidate = candidateService.getCandidateById(id);
-        return ResponseEntity.ok(candidate);
-    }
-
     @PostMapping
     public ResponseEntity<Candidate> createCandidate(@RequestBody Candidate candidate) {
         // Same flaw: returns 200 instead of 201
@@ -50,6 +43,23 @@ public class CandidateController {
             @RequestBody Candidate candidate) {
         Candidate updated = candidateService.updateCandidate(id, candidate);
         return ResponseEntity.ok(updated);
+    }
+
+    @GetMapping("/search/id/{id}")
+    public ResponseEntity<Candidate> getCandidateById(@PathVariable Long id) {
+        Candidate candidate = candidateService.getCandidatesById(id);
+        return ResponseEntity.ok(candidate);
+    }
+
+
+    @GetMapping("/search/name/{name}")
+    public List<Candidate> searchByCandidateName (@PathVariable String name) {
+        return candidateService.getCandidatesByName(name);
+    }
+
+    @GetMapping("/search/email/{email}")
+    public List<Candidate> searchByCandidateEmail(@PathVariable String email){
+        return candidateService.getCandidatesByEmail(email);
     }
 
     @DeleteMapping("/{id}")

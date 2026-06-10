@@ -4,7 +4,10 @@ import com.pluralsight.demo.internship.model.Internship;
 import com.pluralsight.demo.internship.repository.InternshipRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,11 +36,18 @@ public class InternshipService {
                 .orElseThrow(() -> new RuntimeException("Internship not found with id: " + id));
     }
 
+    public List<Internship> searchByCompany(String company){
+        return internshipRepository.findAll().stream()
+                .filter(i -> i.getCompany().contains(company)).
+                filter(Internship::isPublished).collect(Collectors.toList());
+    }
+
     public Internship createInternship(Internship internship) {
         // Apply auto-publish config
         if (autoPublish) {
             internship.setPublished(true);
         }
+        internship.setCreatedAt(LocalDateTime.now());
         return internshipRepository.save(internship);
     }
 

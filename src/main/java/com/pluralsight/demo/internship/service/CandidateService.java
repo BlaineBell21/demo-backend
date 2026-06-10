@@ -20,7 +20,7 @@ public class CandidateService {
         return candidateRepository.findAll();
     }
 
-    public Candidate getCandidateById(Long id) {
+    public Candidate getCandidatesById(Long id) {
         // Same flaw as InternshipService for consistency
         return candidateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Candidate not found with id: " + id));
@@ -29,14 +29,27 @@ public class CandidateService {
     public List<Candidate> getCandidatesByFieldOfStudy(String fieldOfStudy) {
         return candidateRepository.findAll().stream()
                 .filter(c -> c.getFieldOfStudy().equalsIgnoreCase(fieldOfStudy))
-                .collect(Collectors.toList()); }
+                .collect(Collectors.toList());
+    }
+
+    public List<Candidate> getCandidatesByEmail(String email){
+        return candidateRepository.findAll().stream()
+                .filter(c -> c.getEmail().toLowerCase().contains(email.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Candidate> getCandidatesByName(String name) {
+        return candidateRepository.findAll().stream()
+                .filter(c -> c.getName().toLowerCase().contains(name.toLowerCase()))
+                .collect(Collectors.toList());
+    }
 
     public Candidate createCandidate(Candidate candidate) {
         return candidateRepository.save(candidate);
     }
 
     public Candidate updateCandidate(Long id, Candidate updatedCandidate) {
-        Candidate existing = getCandidateById(id);
+        Candidate existing = getCandidatesById(id);
         existing.setName(updatedCandidate.getName());
         existing.setEmail(updatedCandidate.getEmail());
         existing.setFieldOfStudy(updatedCandidate.getFieldOfStudy());
