@@ -27,7 +27,7 @@ class InternshipControllerTest {
     private MockMvc mockMvc;  // Simulates HTTP requests
 
     @MockitoBean
-    private InternshipService internshipService;  // Fake service
+    private InternshipService internshipService;  // Fake internship service
 
     @Test
     void getAllInternships_shouldReturnListOfInternships() throws Exception {
@@ -48,8 +48,7 @@ class InternshipControllerTest {
         when(internshipService.getAllInternships()).thenReturn(internships);
 
         // ACT & ASSERT: Make request and verify response
-        mockMvc.perform(get("/api/internships")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/internships").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())  // 200 OK
                 .andExpect(jsonPath("$[0].title").value("Java Developer"))
                 .andExpect(jsonPath("$[0].company").value("Tech Corp"))
