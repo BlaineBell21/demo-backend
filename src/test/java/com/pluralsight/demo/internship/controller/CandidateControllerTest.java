@@ -16,8 +16,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.http.server.LocalTestWebServer.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -75,7 +76,7 @@ class CandidateControllerTest {
                 "Robotics Engineering",
                 "Registration Time");
         savedCandidate.setId(8L);
-        savedCandidate.setVisible(true);
+        savedCandidate.setVisible(false);
 
         when(candidateService.createCandidate(any(Candidate.class)))
                 .thenReturn(savedCandidate);
@@ -85,15 +86,15 @@ class CandidateControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                         {
-                          "name": "New Internship",
-                          "email": "New Company",
-                          "fieldOfStudy": "Description",
+                          "name": "Blaine Anthony Bell",
+                          "email": "blaine@testemail.com",
+                          "fieldOfStudy": "Robotics Engineering"
                         }
                         """))
                 .andExpect(status().isOk())  // Should be 201 but our code returns 200
                 .andExpect(jsonPath("$.id").value(8))
                 .andExpect(jsonPath("$.name").value("Blaine Anthony Bell"))
-                .andExpect(jsonPath("$.isVisible").value(true));
+                .andExpect(jsonPath("$.visible").value(false));
     }
 
     @Test
@@ -101,6 +102,13 @@ class CandidateControllerTest {
     }
 
     @Test
-    void deleteCandidate_shouldReturnNoContent() {
+    void deleteCandidate_shouldReturnNoContent() throws Exception {
+        Long id = 5L;
+        doNothing().when(candidateService).deleteCandidate(id);
+
+        mockMvc.perform(delete("/api/candidates/{id}", id))
+                .andExpect(status().isNoContent());
+
+        verify(candidateService, times(1)).deleteCandidate(id);
     }
 }
