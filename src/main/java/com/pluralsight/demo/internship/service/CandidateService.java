@@ -49,6 +49,11 @@ public class CandidateService {
                 .filter(c -> c.getName().toLowerCase().contains(name.toLowerCase()))
                 .collect(Collectors.toList());
     }
+    public List<Candidate> getAllVisibleCandidates(){
+        return candidateRepository.findAll().stream()
+                .filter(Candidate::isVisible)
+                .collect(Collectors.toList());
+    }
 
     public Candidate createCandidate(Candidate candidate) {
         candidate.setRegisteredAt(DateUtils.currentDateAndTime());

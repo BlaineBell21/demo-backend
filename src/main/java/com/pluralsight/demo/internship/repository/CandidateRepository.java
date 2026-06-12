@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CandidateRepository extends JpaRepository<Candidate, Long> {
+    Object getCandidatesByFieldOfStudy(String fieldOfStudy);
     // No custom queries yet
 }

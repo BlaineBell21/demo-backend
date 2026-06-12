@@ -11,6 +11,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,12 +42,42 @@ class CandidateServiceTest {
         List<Candidate> allCandidates = Arrays.asList(candidate1, candidate2, notVisible);
         when(candidateRepository.findAll()).thenReturn(allCandidates);
 
-        List<Candidate> result = candidateService.getAllCandidates();
+        List<Candidate> result = candidateService.getAllVisibleCandidates();
 
         assertEquals(2, result.size());
-        assertTrue(result.contains(candidate1));
-        assertTrue(result.contains(candidate2));
-        assertFalse(result.contains(notVisible));
+        assertTrue(result.stream().allMatch(Candidate::isVisible));
+
+    }
+
+    @Test
+    void getCandidateByID_whenNotFound_shouldThrowEx(){
+        when(candidateRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> {
+            candidateService.getCandidatesById(99L);
+        });
+    }
+
+    @Test
+    void getCandidateByFieldOfStudy_shouldReturnOnlyCandidatesOfField(){
+        Candidate candidate1 = new Candidate("Name 1","Email 1","Same Field","Registered At 1");
+        candidate1.setVisible(true);
+
+        Candidate candidate2 = new Candidate("Name 2","Email 2","Same Field","Registered At 2");
+        candidate2.setVisible(true);
+
+        Candidate notVisible = new Candidate("Name 3","Email 3","Different Field","Registered At 3");
+
+        List<Candidate> candidates = Arrays.asList(candidate1, candidate2, notVisible);
+
+        when(candidateRepository.findAll()).thenReturn(candidates);
+
+        List<Candidate> result = candidateService.getCandidatesByFieldOfStudy("Same Field");
+
+        assertEquals(2, result.size());
+        assertEquals("Name 1", result.get(0).getName());
+        assertEquals("Name 2", result.get(1).getName());
+
     }
 
     @Test

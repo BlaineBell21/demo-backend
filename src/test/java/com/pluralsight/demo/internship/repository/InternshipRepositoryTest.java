@@ -58,9 +58,9 @@ class InternshipRepositoryTest {
     @Test
     void findAll_shouldReturnAllInternships() {
         // ARRANGE
-        entityManager.persist(new Internship("Internship 1", "Company 1", "Desc", "Loc"));
-        entityManager.persist(new Internship("Internship 2", "Company 2", "Desc", "Loc"));
-        entityManager.persist(new Internship("Internship 3", "Company 3", "Desc", "Loc"));
+        entityManager.persist(new Internship("Internship 1", "Company 1", "Desc 1", "Loc 1"));
+        entityManager.persist(new Internship("Internship 2", "Company 2", "Desc 2", "Loc 2"));
+        entityManager.persist(new Internship("Internship 3", "Company 3", "Desc 3", "Loc 3"));
         entityManager.flush();
 
         // ACT

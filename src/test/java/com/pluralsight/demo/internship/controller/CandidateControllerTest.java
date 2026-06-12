@@ -1,9 +1,7 @@
 package com.pluralsight.demo.internship.controller;
 
 import com.pluralsight.demo.internship.model.Candidate;
-import com.pluralsight.demo.internship.model.Internship;
 import com.pluralsight.demo.internship.service.CandidateService;
-import com.pluralsight.demo.internship.utils.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -17,7 +15,6 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.boot.test.http.server.LocalTestWebServer.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -98,7 +95,23 @@ class CandidateControllerTest {
     }
 
     @Test
-    void getCandidateById_shouldReturnCandidateID() {
+    void getCandidateById_shouldReturnCandidateID() throws Exception {
+        Candidate candidate = new Candidate(
+                "Blaine Anthony Bell",
+                "blaine@testemail.com",
+                "Robotics Engineering",
+                "Registration Time");
+        candidate.setId(1L);
+        candidate.setVisible(true);
+
+        when(candidateService.getCandidatesById(1L)).thenReturn(candidate);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/candidates/search/id/{id}", 1).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())  // 200 OK
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Blaine Anthony Bell"))
+                .andExpect(jsonPath("$.email").value("blaine@testemail.com"))
+                .andExpect(jsonPath("$.fieldOfStudy").value("Robotics Engineering"));  // 2 items
     }
 
     @Test
